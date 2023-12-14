@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDIT YOUR PAGE</title>
+</head>
+<body>
+    <button type="submit" style="width: 150px; height:40px;border-radius:10px;margin-left:58px; border:3px solid black;background-color:skyblue;"><a style="text-decoration: none;font-weight:600; color: black;" href="/home">Go Back</a></button><br>
+    <div id="main"></div>
+    <script>
+
+            function submitedit(event) {
+            event.preventDefault();
+            // if (validateForm()) {
+                const ename = document.getElementById('Name').value;
+                const eage = document.getElementById('age').value;
+                const ephone = document.getElementById('phone').value;
+                const eemail = document.getElementById('email').value;
+
+                const eformDetail = {
+                    name: ename,
+                    age: eage,
+                    phone: ephone,
+                    email: eemail
+                };
+                sendToNode(eformDetail);
+            // }else{
+            //     console.log(Error , 'error on validation');
+            // }
+        }
+        
+        function sendToNode(eformdetail) {
+            
+            // Create a hidden input field to store the JSON data
+            var dataInput = document.createElement('input');
+            dataInput.setAttribute('type', 'hidden');
+            dataInput.setAttribute('name', 'eformdetail');
+            dataInput.setAttribute('value', JSON.stringify(eformdetail));
+
+            // Append the hidden input field to the form
+            document.getElementById('editform').appendChild(dataInput);
+
+            document.getElementById('editform').submit();
+        }
+
+
+        
+    </script>
+</body>
+</html>
+
+<!-- <div style="width:90%;height:550px;background-color:skyblue; margin: auto; box-sizing: border-box; padding:100px 200px;"> -->
+        <!-- <form id="Form" method="put" action="/submit" onsubmit="return submitForm(event)">
+
+
+            <label for="Name"><b>Name : </b></label>
+            <input style="width:300px;height:30px;border:2px solid black;font-weight:bold;" type="text" id="Name"><br>
+            <small id="nameerror" style="color:red; margin-left:50px; font-weight: bold;"></small><br>
+
+            <label for="age"><b> Age :  &nbsp;&nbsp;</b></label>
+            <input style="width:50px;height:30px;border:2px solid black;font-weight:bold;margin-top:15px;" type="number" id="age"><br>
+            <small id="ageerror" style="color:red; margin-left:50px; font-weight: bold;"></small><br>
+
+            <label  for="phone"><b>phone : </b></label>
+            <input style="width:200px;height:30px;border:2px solid black; margin-top:15px;font-weight:bold;" type="number" id="phone"><br>
+            <small id="phoneerror" style="color:red; margin-left:50px; font-weight: bold;"></small><br>
+            
+            <label  for="email"><b>email :  </b></label>
+            <input style="width:200px;height:30px;border:2px solid black; margin-top:20px;font-weight:bold;" type="email" id="email"><br>
+            <small id="mailerror" style="color:red; margin-left:50px; font-weight: bold;"></small><br>
+            
+            <input style="width:200px;border-radius:2px;border:2px solid black; margin:50px 50px;height:30px;" type="reset">
+            <input style="width:200px;border-radius:2px;border:2px solid black; margin:50px 50px; height:30px;" type="submit">
+        </form> -->
+    <!-- <div> -->

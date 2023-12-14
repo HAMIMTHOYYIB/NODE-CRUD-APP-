@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+</head>
+<body>
+    <div style="width:90%;height:550px;background-color:skyblue; margin: auto; box-sizing: border-box; padding:100px 200px;">
+        <form id="Form" method="post" action="/submit" onsubmit="return submitForm(event)">
+
+
+            <label for="Name"><b>Name : </b></label>
+            <input style="width:300px;height:30px;border:2px solid black;font-weight:bold;" type="text" id="Name"><br>
+            <small id="nameerror" style="color:red; margin-left:50px; font-weight: bold;"></small><br>
+
+            <label for="age"><b> Age :  &nbsp;&nbsp;</b></label>
+            <input style="width:50px;height:30px;border:2px solid black;font-weight:bold;margin-top:15px;" type="number" id="age"><br>
+            <small id="ageerror" style="color:red; margin-left:50px; font-weight: bold;"></small><br>
+
+            <label  for="phone"><b>phone : </b></label>
+            <input style="width:200px;height:30px;border:2px solid black; margin-top:15px;font-weight:bold;" type="number" id="phone"><br>
+            <small id="phoneerror" style="color:red; margin-left:50px; font-weight: bold;"></small><br>
+            
+            <label  for="email"><b>email :  </b></label>
+            <input style="width:200px;height:30px;border:2px solid black; margin-top:20px;font-weight:bold;" type="email" id="email"><br>
+            <small id="mailerror" style="color:red; margin-left:50px; font-weight: bold;"></small><br>
+            
+            <input style="width:200px;border-radius:2px;border:2px solid black; margin:50px 50px;height:30px;" type="reset">
+            <input style="width:200px;border-radius:2px;border:2px solid black; margin:50px 50px; height:30px;" type="submit">
+        </form>
+    </div>
+
+    <script>
+        
+
+         function validateForm() {
+
+            document.getElementById('nameerror').innerHTML = '';
+            document.getElementById('ageerror').innerHTML = '';
+            document.getElementById('phoneerror').innerHTML = '';
+            document.getElementById('mailerror').innerHTML = '';
+
+            var name = document.getElementById('Name').value;
+            var age = document.getElementById('age').value;
+            var phone = document.getElementById('phone').value;
+            var email = document.getElementById('email').value;
+
+            let nameerr = document.getElementById('nameerror')
+            let ageerr = document.getElementById('ageerror')
+            let phoneerr = document.getElementById('phoneerror')
+            let mailerr = document.getElementById('mailerror')
+
+            let nameRegex = /^[a-zA-Z\s]+$/;
+            let validName = nameRegex.test(name);
+
+            let ageRegex = /^(?:[1-9]|[1-9][0-9]|1[0-4][0-9])$/      // or ^\d+$/;
+            let validAge = ageRegex.test(age);
+
+            let phoneRegex = /^\d{10}$/;
+            let validPhone = phoneRegex.test(phone);
+
+            let emailRegex = /^\S+@\S+\.\S+$/;
+            let validmail = emailRegex.test(email);
+
+            if (!validName) {
+                nameerr.innerHTML = "Invalid Name Format";
+                return false;
+            }
+            if (!validAge) {
+                ageerr.innerHTML = "Age is invalid";
+                return false;
+            }
+            if (!validPhone ) {
+                phoneerr.innerHTML = "Phone number must be 10 digits";
+                return false;
+            }
+            if (!validmail) {
+                mailerr.innerHTML = "Invalid Mail format";
+                return false;
+            }
+            return true;
+        }
+        
+        function submitForm(event) {
+            event.preventDefault();
+            if (validateForm()) {
+                const name = document.getElementById('Name').value;
+                const age = document.getElementById('age').value;
+                const phone = document.getElementById('phone').value;
+                const email = document.getElementById('email').value;
+
+                const formDetail = {
+                    name: name,
+                    age: age,
+                    phone: phone,
+                    email: email
+                };
+                sendDataToNode(formDetail);
+            }else{
+                console.log(Error);
+            }
+        }
+
+        function sendDataToNode(formdetail) {
+
+        // Create a hidden input field to store the JSON data
+        var dataInput = document.createElement('input');
+        dataInput.setAttribute('type', 'hidden');
+        dataInput.setAttribute('name', 'formdetail');
+        dataInput.setAttribute('value', JSON.stringify(formdetail));
+        
+        // Append the hidden input field to the form
+        document.getElementById('Form').appendChild(dataInput);
+
+        document.getElementById('Form').submit();
+    }
+    </script>
+</body> 
+</html>
