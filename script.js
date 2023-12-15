@@ -9,7 +9,7 @@ let formpage = fs.readFileSync('./Files/form.html','utf-8')
 let editform = fs.readFileSync('./Files/editform.html','utf-8')
 let datas = JSON.parse(fs.readFileSync('./Data/files.json','utf-8'))
 
-
+// To update the listdata as in json
 function upadtaeTable(datas) {
     let tableRows = '';
     datas.forEach((data, index) => {
@@ -42,7 +42,7 @@ function upadtaeTable(datas) {
     return updatehtml;
 }
 
-// To fill the data before showing the form.
+// To prefill the data on showing the edit form.
 function prefilledit(rowindex,rowData) { 
     const prefilled = `
     <div style="width:90%;height:550px;background-color:skyblue; margin: auto; box-sizing: border-box; padding:100px 200px;">
@@ -71,17 +71,19 @@ function prefilledit(rowindex,rowData) {
      return editform;
 }
 
+
+// Creating Server
 const server = http.createServer((req,res) => {
     let path = req.url;
     try {
 
         // Home page
-        if(req.method === 'GET' && (path === '/' || path === '/home' || path === '/list')){
+        if(req.method === 'GET' && (path === '/' || path === '/home')){
             res.write(upadtaeTable(datas));
             res.end();
         }
 
-        // Form page  on clicking add user;
+        // Form page  on clicking add user from homepage;
         else if (req.method === 'GET' && path === '/Form') {
             res.writeHead(200 , {'content-type' : 'text/html'})
             res.write(formpage)
@@ -181,6 +183,7 @@ const server = http.createServer((req,res) => {
             }
         }
 
+        // On submiting the data of the edit page , based on the index the  data is replaced.
         else if (req.method === 'POST' &&path === "/submitedit") {
             try {
 
@@ -224,7 +227,7 @@ const server = http.createServer((req,res) => {
             }
         }
 
-        //
+        // Any other route in url shows an error page.
          else {
             res.writeHead(404 , {'Content-type':'text/plain'})
             res.end('Cant find page')
