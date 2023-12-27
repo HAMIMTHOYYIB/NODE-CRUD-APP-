@@ -107,8 +107,8 @@ const server = http.createServer((req,res) => {
                             res.writeHead(500, { 'Content-Type': 'text/plain' });
                             res.end('Error on saving form data');
                         } else {
-                            res.writeHead(200, { 'Content-Type': 'text/html' });
-                            res.write(upadtaeTable(datas));
+                            upadtaeTable(datas)
+                            res.writeHead(302, { 'Location': '/home' });
                             res.end();
                         }
                     });
@@ -190,7 +190,6 @@ const server = http.createServer((req,res) => {
                 let body = '';
                 req.on('data' , (chunk) => (body += chunk));
                 req.on('end' , () => {
-                    console.log(body);
                     try {
                         const formdata = querystring.parse(body)
                         console.log('eformdata :',formdata)
@@ -198,7 +197,7 @@ const server = http.createServer((req,res) => {
                         const rowindex = parseInt(formdata.rowindex)
 
                         if(!isNaN(rowindex) && rowindex > 0 && rowindex <= datas.length){
-                            datas[rowindex - 1] = updatedDetails;
+                            datas[rowindex-1] = updatedDetails;
 
                             fs.writeFile('./data/files.json' , JSON.stringify(datas, null ,2) , (err) => {
                                 if(err){
