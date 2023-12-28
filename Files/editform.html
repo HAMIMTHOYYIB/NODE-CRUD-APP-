@@ -6,13 +6,61 @@
     <title>EDIT YOUR PAGE</title>
 </head>
 <body>
-    <button type="submit" style="width: 150px; height:40px;border-radius:10px;margin-left:58px; border:3px solid black;background-color:skyblue;"><a style="text-decoration: none;font-weight:600; color: black;" href="/home">Go Back</a></button><br>
+    <!-- <button type="submit" style="width: 150px; height:40px;border-radius:10px;margin-left:58px; border:3px solid black;background-color:skyblue;"><a style="text-decoration: none;font-weight:600; color: black;" href="/home">Go Back</a></button><br> -->
     <div id="main"></div>
     <script>
 
+        function validateForm() {
+
+            document.getElementById('nameerror').innerHTML = '';
+            document.getElementById('ageerror').innerHTML = '';
+            document.getElementById('phoneerror').innerHTML = '';
+            document.getElementById('mailerror').innerHTML = '';
+
+            var name = document.getElementById('Name').value;
+            var age = document.getElementById('age').value;
+            var phone = document.getElementById('phone').value;
+            var email = document.getElementById('email').value;
+
+            let nameerr = document.getElementById('nameerror')
+            let ageerr = document.getElementById('ageerror')
+            let phoneerr = document.getElementById('phoneerror')
+            let mailerr = document.getElementById('mailerror')
+
+            let nameRegex = /^[a-zA-Z\s]+$/;
+            let validName = nameRegex.test(name);
+
+            let ageRegex = /^(?:[1-9]|[1-9][0-9]|1[0-4][0-9])$/      // or ^\d+$/;
+            let validAge = ageRegex.test(age);
+
+            let phoneRegex = /^\d{10}$/;
+            let validPhone = phoneRegex.test(phone);
+
+            let emailRegex = /^\S+@\S+\.\S+$/;
+            let validmail = emailRegex.test(email);
+
+            if (!validName) {
+                nameerr.innerHTML = "Invalid Name Format";
+            }
+            if (!validAge) {
+                ageerr.innerHTML = "Age is invalid";
+            }
+            if (!validPhone ) {
+                phoneerr.innerHTML = "Phone number must be 10 digits";
+            }
+            if (!validmail) {
+                mailerr.innerHTML = "Invalid Mail format";
+            }
+            if (!validName||!validAge||!validPhone||!validmail) {
+                return false;
+            }else{
+                return true;
+            }
+        }
+
             function submitedit(event) {
             event.preventDefault();
-            // if (validateForm()) {
+            if (validateForm()) {
                 const ename = document.getElementById('Name').value;
                 const eage = document.getElementById('age').value;
                 const ephone = document.getElementById('phone').value;
@@ -25,9 +73,9 @@
                     email: eemail
                 };
                 sendToNode(eformDetail);
-            // }else{
-            //     console.log(Error , 'error on validation');
-            // }
+            }else{
+                console.log(Error , 'error on validation');
+            }
         }
         
         function sendToNode(eformdetail) {

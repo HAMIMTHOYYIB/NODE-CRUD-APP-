@@ -1,8 +1,6 @@
-// const { error } = require('console');
+const http = require('http');
 const fs = require('fs');
-const http = require('http')
 const querystring = require("querystring");
-// const { Script } = require('vm');
 
 let html1 = fs.readFileSync('./Files/index.html' , 'utf-8')
 let formpage = fs.readFileSync('./Files/form.html','utf-8')
@@ -10,7 +8,7 @@ let editform = fs.readFileSync('./Files/editform.html','utf-8')
 let datas = JSON.parse(fs.readFileSync('./Data/files.json','utf-8'))
 
 // To update the listdata as in json
-function upadtaeTable(datas) {
+function updatedTable(datas) {
     let tableRows = '';
     datas.forEach((data, index) => {
         tableRows += `
@@ -42,7 +40,7 @@ function upadtaeTable(datas) {
     return updatehtml;
 }
 
-// To prefill the data on showing the edit form.
+// To prefill the data on the edit form.
 function prefilledit(rowindex,rowData) { 
     const prefilled = `
     <div style="width:90%;height:550px;background-color:skyblue; margin: auto; box-sizing: border-box; padding:100px 200px;">
@@ -51,12 +49,15 @@ function prefilledit(rowindex,rowData) {
             
             <label for="Name"><b>Name : </b></label>
             <input style="width:300px;height:30px;border:2px solid black;font-weight:bold;" type="text" id="Name" value="${rowData.name}"><br>
+            <small id="nameerror" style="color:red; margin-left:50px; font-weight: bold;"></small><br>
             
             <label for="age"><b> Age :  &nbsp;&nbsp;</b></label>
             <input style="width:50px;height:30px;border:2px solid black;font-weight:bold;margin-top:15px;" type="number" id="age" value="${rowData.age}"><br>
+            <small id="ageerror" style="color:red; margin-left:50px; font-weight: bold;"></small><br>
 
             <label  for="phone"><b>phone : </b></label>
             <input style="width:200px;height:30px;border:2px solid black; margin-top:15px;font-weight:bold;" type="number" id="phone" value="${rowData.phone}"><br>
+            <small id="phoneerror" style="color:red; margin-left:50px; font-weight: bold;"></small><br>
 
             <label  for="email"><b>email :  </b></label>
             <input style="width:200px;height:30px;border:2px solid black; margin-top:20px;font-weight:bold;" type="email" id="email" value="${rowData.email}"><br>
@@ -79,7 +80,7 @@ const server = http.createServer((req,res) => {
 
         // Home page
         if(req.method === 'GET' && (path === '/' || path === '/home')){
-            res.write(upadtaeTable(datas));
+            res.write(updatedTable(datas));
             res.end();
         }
 
@@ -101,13 +102,15 @@ const server = http.createServer((req,res) => {
                     const formDetail = JSON.parse(formData.formdetail);
                     datas.push(formDetail);
                   
+                    // The json data is updated
                     fs.writeFile('./Data/files.json', JSON.stringify(datas, null,2), (err) => {
                         if (err) {
                             console.error(err);
                             res.writeHead(500, { 'Content-Type': 'text/plain' });
                             res.end('Error on saving form data');
                         } else {
-                            upadtaeTable(datas)
+                            updatedTable(datas)
+                            // Redirected to homepage
                             res.writeHead(302, { 'Location': '/home' });
                             res.end();
                         }
@@ -127,10 +130,10 @@ const server = http.createServer((req,res) => {
             req.on('end', () => {
                 try {
                     const formData = querystring.parse(body);
-                    const rowToDelete = parseInt(formData.rowindex);
-        
-                    if (!isNaN(rowToDelete) && rowToDelete > 0 && rowToDelete <= datas.length) {
-                        datas.splice(rowToDelete - 1, 1); 
+                    const deleteRow = parseInt(formData.rowindex);
+
+                    if (!isNaN(deleteRow) && deleteRow > 0 && deleteRow <= datas.length) {
+                        datas.splice(deleteRow -1, 1);
         
                         fs.writeFile('./Data/files.json', JSON.stringify(datas, null, 2), (err) => {
                             if (err) {
@@ -158,20 +161,19 @@ const server = http.createServer((req,res) => {
         else if (req.method === 'GET' && path.startsWith('/Edit')) {
             
             try {
-                const urlParts = req.url.split('?'); 
+                const urlParts = req.url.split('?');
                 if (urlParts.length > 1) {
                     const queryParams = urlParts.pop(); //takes the last part by poping (rowindex only)
-                    console.log("Edit the "+queryParams)
-                    const params = new URLSearchParams(queryParams);
+                    console.log("Edit on :"+queryParams)
+                    const params = new URLSearchParams(queryParams);//to parse from a url
                     const rowindex = parseInt(params.get('rowindex'));
 
-                if (!isNaN(rowindex) && rowindex > 0 && rowindex <= datas.length) {
-                    const rowdata = datas[rowindex - 1];
-                    // prefilledit(rowindex,rowdata)
-                    res.writeHead(200, { 'Content-type': 'text/html' });
-                    res.write(prefilledit(rowindex,rowdata));
-                    res.end();
-                    }
+                    if (!isNaN(rowindex) && rowindex > 0 && rowindex <= datas.length) {
+                        const rowdata = datas[rowindex - 1];
+                        res.writeHead(200, { 'Content-type': 'text/html' });
+                        res.write(prefilledit(rowindex,rowdata));
+                        res.end();
+                        }
                 } else {
                     res.writeHead(400, { 'Content-Type': 'text/plain' });
                     res.end('Invalid row index for editing');
@@ -206,7 +208,7 @@ const server = http.createServer((req,res) => {
                                     res.end('Error on updating datas of edit')
                                 }else{
                                     res.writeHead(200,{'Content-Type':'text/html'});
-                                    res.end(upadtaeTable(datas));
+                                    res.end(updatedTable(datas));
                                 }
                             });
                         }else{

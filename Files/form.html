@@ -65,21 +65,21 @@
 
             if (!validName) {
                 nameerr.innerHTML = "Invalid Name Format";
-                return false;
             }
             if (!validAge) {
                 ageerr.innerHTML = "Age is invalid";
-                return false;
             }
             if (!validPhone ) {
                 phoneerr.innerHTML = "Phone number must be 10 digits";
-                return false;
             }
             if (!validmail) {
                 mailerr.innerHTML = "Invalid Mail format";
-                return false;
             }
-            return true;
+            if (!validName||!validAge||!validPhone||!validmail) {
+                return false;
+            }else{
+                return true;
+            }
         }
         
         function submitForm(event) {
